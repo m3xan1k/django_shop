@@ -1,0 +1,24 @@
+<div class="row">
+
+{% for product in products %}
+  <div class="col-lg-4 col-md-6 mb-4">
+    <div class="card h-100">
+      <a href="#"><img class="card-img-top" src="{{ MEDIA_URL }}{{ product.image.url }}" alt="" style="width: 250px; height: 180px;"></a>
+      <div class="card-body">
+        <h5 class="card-title">
+          <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
+        </h5>
+        <h6>{{ product.price }} ₽</h6>
+        <p class="card-text">{{ product.description|truncatewords:15 }}</p>
+        <a href="{% url 'add_to_cart_url' slug=product.slug %}" class="btn btn-primary">В корзину</a>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted">{{ product.category }}  {{ product.brand }}</small>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+
+</div>
+<!-- /.row -->

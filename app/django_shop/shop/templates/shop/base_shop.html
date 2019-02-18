@@ -1,0 +1,70 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>{% block title %} СМП.ГЕО {% endblock %}</title>
+
+  <link rel="stylesheet" href="{% static 'css/navbar-fixed-left.min.css' %}">
+  <link href="{% static 'css/main.css' %}" rel="stylesheet">
+  <!-- Bootstrap core CSS -->
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'css/shop-homepage.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  {% include 'shop/includes/navbar.html' %}
+
+  <!-- Page Content -->
+  <div class="container">
+
+    <div class="row">
+
+      {% include 'shop/includes/categories.html' %}
+      <!-- /.col-lg-3 -->
+
+      <div class="col-lg-9">
+
+{% block content %}
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+</div>
+<!-- /.col-lg-9 -->
+
+</div>
+<!-- /.row -->
+
+</div>
+<!-- /.container -->
+
+
+{% include 'shop/includes/footer.html' %}
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static 'js/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'js/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+
+</html>
