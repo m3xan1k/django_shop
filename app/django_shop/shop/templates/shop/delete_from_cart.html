@@ -1,0 +1,16 @@
+{% extends 'shop/base_shop.html' %}
+
+{% block title %}
+  Удаление {{ item.product.title }} из корзины - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<form class="mb-5" action="{% url 'delete_from_cart_url' slug=item.product.slug %}" method="post">
+  {% csrf_token %}
+  <h3 class="mb-5">Удалить {{ item.product.title }} из корзины?</h3>
+  <a href="{% url 'cart_url' %}" class="btn btn-success">Не удалять</a>
+  <button type="submit" class="btn btn-danger">Удалить</button>
+</form>
+
+
+{% endblock %}

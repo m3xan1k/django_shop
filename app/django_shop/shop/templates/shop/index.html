@@ -1,5 +1,6 @@
-{% extends 'shop/base_shop.html' %}
 
+{% extends 'shop/base_shop.html' %}
+{% load static %}
 {% block title %}
   Интернет-магазин измерительного оборудования для геодезистов - {{ block.super }}
 {% endblock %}
@@ -15,5 +16,24 @@
     {% include 'shop/includes/showcase.html' %}
 
 
-
+    <script src="{% static 'js/vendor/jquery/jquery.min.js' %}"></script>
+    <script>
+      $(document).ready(function(){
+        $(document).on('click', '.add-to-cart', function(e){
+          e.preventDefault()
+          slug = $(this).attr('data-slug')
+          data = {
+            slug: slug,
+          }
+          $.ajax({
+            type: "GET",
+            url: "{% url 'add_to_cart_url' %}",
+            data: data,
+            success: function(data){
+              $('#cart-count').html(data.cart_total)
+            }
+          })
+        })
+      })
+    </script>
 {% endblock %}

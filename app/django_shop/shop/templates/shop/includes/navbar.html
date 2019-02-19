@@ -21,7 +21,7 @@
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a class="nav-link" href="{% url 'cart_url' %}">Корзина <span class="badge badge-secondary">{{ cart.items.count }}</span></a></li>
+        <li><a class="nav-link" href="{% url 'cart_url' %}">Корзина <span class="badge badge-secondary" id='cart-count'>{{ cart.items.count }}</span></a></li>
       </ul>
     </div>
   </div>

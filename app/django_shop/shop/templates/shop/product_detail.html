@@ -1,5 +1,6 @@
-{% extends 'shop/base_shop.html' %}
 
+{% extends 'shop/base_shop.html' %}
+{% load static %}
 {% block title %}
   {{ product.title }} - {{ block.super }}
 {% endblock %}
@@ -13,28 +14,30 @@
             <h4>{{ product.price }}</h4>
             <p class="card-text">{{ product.description }}</p>
             <span class="text-warning">{{ product.category }} {{ product.brand }}</span>
-            <a href="{% url 'add_to_cart_url' slug=product.slug %}" class="btn btn-primary">В корзину</a>
+            <a href="#" class="add-to-cart btn btn-primary" data-slug="{{ product.slug }}">В корзину</a>
           </div>
         </div>
+
         <!-- /.card -->
 
-        <!-- <div class="card card-outline-secondary my-4">
-          <div class="card-header">
-            Product Reviews
-          </div>
-          <div class="card-body">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-            <small class="text-muted">Posted by Anonymous on 3/1/17</small>
-            <hr>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-            <small class="text-muted">Posted by Anonymous on 3/1/17</small>
-            <hr>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-            <small class="text-muted">Posted by Anonymous on 3/1/17</small>
-            <hr>
-            <a href="#" class="btn btn-success">Leave a Review</a>
-          </div>
-        </div> -->
-        <!-- /.card -->
-
+        <script src="{% static 'js/vendor/jquery/jquery.min.js' %}"></script>
+        <script>
+          $(document).ready(function(){
+            $(document).on('click', '.add-to-cart', function(e){
+              e.preventDefault()
+              slug = $(this).attr('data-slug')
+              data = {
+                slug: slug,
+              }
+              $.ajax({
+                type: "GET",
+                url: "{% url 'add_to_cart_url' %}",
+                data: data,
+                success: function(data){
+                  $('#cart-count').html(data.cart_total)
+                }
+              })
+            })
+          })
+        </script>
 {% endblock %}

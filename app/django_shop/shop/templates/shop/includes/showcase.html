@@ -10,7 +10,9 @@
         </h5>
         <h6>{{ product.price }} ₽</h6>
         <p class="card-text">{{ product.description|truncatewords:15 }}</p>
-        <a href="{% url 'add_to_cart_url' slug=product.slug %}" class="btn btn-primary">В корзину</a>
+      </div>
+      <div class="card-footer">
+        <a href="#" class="add-to-cart btn btn-primary" data-slug="{{ product.slug }}">В корзину</a>
       </div>
       <div class="card-footer">
         <small class="text-muted">{{ product.category }}  {{ product.brand }}</small>

@@ -1,5 +1,5 @@
 {% extends 'shop/base_shop.html' %}
-
+{% load static %}
 {% block title %}
 
 Корзина - {{ block.super }}
@@ -19,13 +19,60 @@
   </thead>
   <tbody>
     {% for item in cart.items.all %}
-    <tr>
-      <td>{{item.product.title}}</td>
-      <td>{{item.qty}}</td>
-      <td>{{item.item_total}}</td>
+    <tr class='cart-item-{{ item.product.slug }}'>
+      <input type="hidden" class="cart-item" data-slug="{{ item.product.slug }}">
+      <td><a href="{{item.product.get_absolute_url}}">{{item.product.title}}</a></td>
+      <td>
+        <form action="" method="GET">
+          <input class="cart-item-qty" data-id="{{ item.id }}" type="number" name="qty" value="{{item.qty}}" min="1">
+        </form>
+      </td>
+      <td id="cart-item-total-{{ item.id }}">{{item.item_total}}</td>
+      <td><a href="#" class="remove-from-cart btn btn-danger" data-slug="{{ item.product.slug }}">Удалить</a></td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 
+<script src="{% static 'js/vendor/jquery/jquery.min.js' %}"></script>
+<script>
+  $(document).ready(function(){
+    $(document).on('click', '.remove-from-cart', function(e){
+      e.preventDefault()
+      slug = $(this).attr('data-slug')
+      item_slug = $('.cart-item').attr('data-slug')
+      data = {
+        slug: slug,
+      }
+      $.ajax({
+        type: "GET",
+        url: "{% url 'delete_from_cart_url' %}",
+        data: data,
+        success: function(data){
+          $('#cart-count').html(data.cart_total)
+          $('.cart-item-'+item_slug).remove()
+        }
+      })
+    })
+  })
+  $(document).ready(function(){
+    $(document).on('click', '.cart-item-qty', function(e){
+      e.preventDefault()
+      qty = $(this).val()
+      item_id = $(this).attr('data-id')
+      data = {
+        qty: qty,
+        item_id: item_id,
+      }
+      $.ajax({
+        type: "GET",
+        url: '{% url "change_item_qty_url" %}',
+        data: data,
+        success: function(data){
+          $('#cart-item-total-'+item_id).html(parseFloat(data.item_total).toFixed(2) + ' руб')
+        }
+      })
+    })
+  })
+</script>
 {% endblock %}

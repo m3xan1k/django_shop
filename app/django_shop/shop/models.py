@@ -101,3 +101,12 @@ class Cart(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+    def add_to_cart(self, request, slug):
+        cart = self
+        product = Product.objects.get(slug__iexact=slug)
+        new_item = CartItem.objects.get_or_create(product=product, item_total=product.price)[0]
+        if new_item not in cart.items.all():
+            # так как метод .get_or_create возвращает кортеж, а объект CartItem там идет под нулевым индексом, именно его нам надо получить. Можно сделать двойное присваивание new_item, _ = ... , или можно забрать [0] от кортежа или от new_item
+            cart.items.add(new_item)
+            cart.save()
