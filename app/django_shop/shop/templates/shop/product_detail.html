@@ -34,7 +34,7 @@
                 url: "{% url 'add_to_cart_url' %}",
                 data: data,
                 success: function(data){
-                  $('#cart-count').html(data.cart_total)
+                  $('#cart-count').html(data.cart_items_count)
                 }
               })
             })

@@ -5,6 +5,7 @@ from time import time
 from django.utils.text import slugify
 from transliterate import translit
 from django.urls import reverse
+from django.conf import settings
 
 # Create your models here.
 
@@ -110,3 +111,26 @@ class Cart(models.Model):
             # так как метод .get_or_create возвращает кортеж, а объект CartItem там идет под нулевым индексом, именно его нам надо получить. Можно сделать двойное присваивание new_item, _ = ... , или можно забрать [0] от кортежа или от new_item
             cart.items.add(new_item)
             cart.save()
+
+
+ORDER_STATUS_CHOICES = (
+    ('Принят в обработку', 'Принят в обработку'),
+    ('Выполняется', 'Выполняется'),
+    ('Оплачен', 'Оплачен')
+)
+
+class Order(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Cart)
+    total = models.DecimalField(max_digits=9, decimal_places=2, default=0.00)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    phone = models.CharField(max_length=20)
+    address = models.CharField(max_length=255)
+    buying_type = models.CharField(max_length=40, choices=(('Самовывоз', 'Самовывоз'), ('Доставка', 'Доставка')))
+    date = models.DateTimeField(auto_now_add=True)
+    comments = models.TextField()
+    status = models.CharField(max_length=100, choices=ORDER_STATUS_CHOICES)
+
+    def __str__(self):
+        return f'Заказ №{self.id}'

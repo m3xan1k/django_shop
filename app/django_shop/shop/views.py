@@ -5,7 +5,10 @@ from django.http import JsonResponse
 from decimal import Decimal
 
 
+
+
 # Create your views here.
+
 
 def create_cart(request):
     try:
@@ -19,6 +22,7 @@ def create_cart(request):
         request.session['cart_id'] = cart_id
         cart = Cart.objects.get(id=cart_id)
     return cart
+
 
 def index(request):
     cart = create_cart(request)
@@ -34,6 +38,7 @@ def index(request):
     }
     return render(request, 'shop/index.html', context=context)
 
+
 class ProductDetail(View):
     def get(self, request, slug):
         product = Product.objects.get(slug__iexact=slug)
@@ -45,6 +50,7 @@ class ProductDetail(View):
             'cart': cart,
         }
         return render(request, 'shop/product_detail.html', context=context)
+
 
 class CategoryDetail(View):
     def get(self, request, slug):
@@ -63,17 +69,24 @@ class CategoryDetail(View):
 
 def cart(request):
     cart = create_cart(request)
+    for item in cart.items.all():
+        cart.cart_total += item.item_total
     context = {
         'cart': cart,
     }
     return render(request, 'shop/cart.html', context=context)
+
 
 class AddToCart(View):
     def get(self, request):
         cart = create_cart(request)
         slug = request.GET.get('slug')
         cart.add_to_cart(request, slug)
-        return JsonResponse({'cart_total': cart.items.count()})
+        return JsonResponse({
+            'cart_items_count': cart.items.count(),
+            'cart_total': cart.cart_total,
+            })
+
 
 class DeleteFromCart(View):
     def get(self, request):
@@ -82,13 +95,20 @@ class DeleteFromCart(View):
         product = Product.objects.get(slug__iexact=slug)
         item = CartItem.objects.get(product=product)
         item.delete()
-        return JsonResponse({'cart_total': cart.items.count()})
+        new_cart_total = Decimal(0.00)
+        for item in cart.items.all():
+            cart.cart_total += item.item_total
+        return JsonResponse({
+            'cart_items_count': cart.items.count(),
+            'cart_total': cart.cart_total,
+            })
     # def post(self, request, slug):
     #     cart = create_cart(request)
     #     product = Product.objects.get(slug__iexact=slug)
     #     item = CartItem.objects.get(product=product)
     #     item.delete()
     #     return redirect('/cart/')
+
 
 def change_item_qty(request):
     cart = create_cart(request)
@@ -98,4 +118,10 @@ def change_item_qty(request):
     cart_item.qty = int(qty)
     cart_item.item_total = int(qty) * Decimal(cart_item.product.price)
     cart_item.save()
-    return JsonResponse({'cart_total': cart.items.count(), 'item_total': cart_item.item_total})
+    for item in cart.items.all():
+        cart.cart_total += item.item_total
+    return JsonResponse({
+        'cart_items_count': cart.items.count(),
+        'item_total': cart_item.item_total,
+        'cart_total': cart.cart_total,
+        })

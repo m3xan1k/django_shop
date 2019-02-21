@@ -8,31 +8,48 @@
 
 {% block content %}
 
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">Товар</th>
-      <th scope="col">Количество</th>
-      <th scope="col">Цена</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in cart.items.all %}
-    <tr class='cart-item-{{ item.product.slug }}'>
-      <input type="hidden" class="cart-item" data-slug="{{ item.product.slug }}">
-      <td><a href="{{item.product.get_absolute_url}}">{{item.product.title}}</a></td>
-      <td>
-        <form action="" method="GET">
-          <input class="cart-item-qty" data-id="{{ item.id }}" type="number" name="qty" value="{{item.qty}}" min="1">
-        </form>
-      </td>
-      <td id="cart-item-total-{{ item.id }}">{{item.item_total}}</td>
-      <td><a href="#" class="remove-from-cart btn btn-danger" data-slug="{{ item.product.slug }}">Удалить</a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  <h3>Ваша корзина</h3>
+  <div class='cart-empty'></div>
+{% if cart.items.count == 0 %}
+  <h4>Корзина пуста</h4>
+{% else %}
+  <div class="my-cart">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Товар</th>
+        <th scope="col">Количество</th>
+        <th scope="col">Цена</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in cart.items.all %}
+      <tr class='cart-item-{{ item.product.slug }}'>
+        <input type="hidden" class="cart-item" data-slug="{{ item.product.slug }}">
+        <td><a href="{{item.product.get_absolute_url}}">{{item.product.title}}</a></td>
+        <td>
+          <form action="" method="GET">
+            <input class="cart-item-qty" data-id="{{ item.id }}" type="number" name="qty" value="{{item.qty}}" min="1">
+          </form>
+        </td>
+        <td id="cart-item-total-{{ item.id }}">{{item.item_total}}</td>
+        <td><a href="#" class="remove-from-cart btn btn-danger" data-slug="{{ item.product.slug }}">Удалить</a></td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td></td>
+        <td></td>
+        <td class="cart-total-count" data-total="{{ cart.cart_total }}"><strong>{{ cart.cart_total }}</strong></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+{% endif %}
+
+
+
 
 <script src="{% static 'js/vendor/jquery/jquery.min.js' %}"></script>
 <script>
@@ -40,17 +57,22 @@
     $(document).on('click', '.remove-from-cart', function(e){
       e.preventDefault()
       slug = $(this).attr('data-slug')
-      item_slug = $('.cart-item').attr('data-slug')
       data = {
         slug: slug,
       }
+      console.log(data)
       $.ajax({
         type: "GET",
         url: "{% url 'delete_from_cart_url' %}",
         data: data,
         success: function(data){
-          $('#cart-count').html(data.cart_total)
-          $('.cart-item-'+item_slug).remove()
+          $('#cart-count').html(data.cart_items_count)
+          $('.cart-total-count').html(data.cart_total)
+          $('.cart-item-'+slug).remove()
+          if(parseInt(data.cart_items_count) == 0){
+            $('.cart-empty').append('<h4>Корзина пуста</4>')
+            $('.my-cart').remove()
+          }
         }
       })
     })
@@ -60,16 +82,20 @@
       e.preventDefault()
       qty = $(this).val()
       item_id = $(this).attr('data-id')
+      cart_total = $(this).attr('data-cart-total')
       data = {
         qty: qty,
         item_id: item_id,
+        cart_total: cart_total
       }
+      console.log(data.cart_total)
       $.ajax({
         type: "GET",
         url: '{% url "change_item_qty_url" %}',
         data: data,
         success: function(data){
           $('#cart-item-total-'+item_id).html(parseFloat(data.item_total).toFixed(2) + ' руб')
+          $('.cart-total-count').html(data.cart_total)
         }
       })
     })

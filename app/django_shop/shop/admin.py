@@ -9,6 +9,7 @@ admin.site.register(Product)
 admin.site.register(SliderImage)
 admin.site.register(Cart)
 admin.site.register(CartItem)
+admin.site.register(Order)
 
 class CategoryAdmin(admin.ModelAdmin):
     readonly_fields = ('slug', )
