@@ -11,9 +11,15 @@
         <h6>{{ product.price }} ₽</h6>
         <p class="card-text">{{ product.description|truncatewords:15 }}</p>
       </div>
+
       <div class="card-footer">
-        <a href="#" class="add-to-cart btn btn-primary" data-slug="{{ product.slug }}">В корзину</a>
+        {% if product.title in cart_items %}
+          <a href="#" class="add-to-cart" data-slug="{{ product.slug }}"><button class="btn btn-primary" disabled>Товар в корзине</button></a>
+        {% else %}
+          <a href="#" class="add-to-cart" data-slug="{{ product.slug }}"><button class="btn btn-primary">В корзину</button></a>
+        {% endif %}
       </div>
+
       <div class="card-footer">
         <small class="text-muted">{{ product.category }}  {{ product.brand }}</small>
       </div>

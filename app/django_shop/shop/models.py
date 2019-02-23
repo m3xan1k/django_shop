@@ -6,6 +6,7 @@ from django.utils.text import slugify
 from transliterate import translit
 from django.urls import reverse
 from django.conf import settings
+from django.utils import timezone
 
 # Create your models here.
 
@@ -112,11 +113,24 @@ class Cart(models.Model):
             cart.items.add(new_item)
             cart.save()
 
+    # пересчет общей суммы в корзине
+    def recount_cart(self):
+        cart = self
+        for item in cart.items.all():
+            cart.cart_total += item.item_total
+        return cart
+
+
 
 ORDER_STATUS_CHOICES = (
     ('Принят в обработку', 'Принят в обработку'),
     ('Выполняется', 'Выполняется'),
     ('Оплачен', 'Оплачен')
+)
+
+ORDER_BUYING_TYPE = (
+    ('Самовывоз', 'Самовывоз'),
+    ('Доставка', 'Доставка')
 )
 
 class Order(models.Model):
@@ -126,11 +140,13 @@ class Order(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     phone = models.CharField(max_length=20)
-    address = models.CharField(max_length=255)
-    buying_type = models.CharField(max_length=40, choices=(('Самовывоз', 'Самовывоз'), ('Доставка', 'Доставка')))
+    email = models.EmailField(max_length=100, null=True)
+    address = models.CharField(max_length=255, blank=True)
+    buying_type = models.CharField(max_length=40, choices=ORDER_BUYING_TYPE, default='Доставка')
     date = models.DateTimeField(auto_now_add=True)
-    comments = models.TextField()
-    status = models.CharField(max_length=100, choices=ORDER_STATUS_CHOICES)
+    delivery_date = models.DateField(default=timezone.now)
+    comments = models.TextField(blank=True)
+    status = models.CharField(max_length=100, choices=ORDER_STATUS_CHOICES, default=ORDER_STATUS_CHOICES[0][0])
 
     def __str__(self):
         return f'Заказ №{self.id}'

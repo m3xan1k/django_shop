@@ -8,7 +8,8 @@
 
 {% block content %}
 
-  <h3>Ваша корзина</h3>
+<h2 class="mb-5">Ваша корзина</h2>
+
   <div class='cart-empty'></div>
 {% if cart.items.count == 0 %}
   <h4>Корзина пуста</h4>
@@ -42,6 +43,12 @@
         <td></td>
         <td class="cart-total-count" data-total="{{ cart.cart_total }}"><strong>{{ cart.cart_total }}</strong></td>
         <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><a href="{% url 'make_order_url' %}" class="btn btn-info">Оформить заказ</a></td>
       </tr>
     </tbody>
   </table>

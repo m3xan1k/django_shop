@@ -11,4 +11,7 @@ urlpatterns = [
     path('add_to_cart/', AddToCart.as_view(), name='add_to_cart_url'),
     path('delete_from_cart/', DeleteFromCart.as_view(), name='delete_from_cart_url'),
     path('change_item_qty/', change_item_qty, name='change_item_qty_url'),
+    path('make_order/', MakeOrder.as_view(), name='make_order_url'),
+    path('order_success/', MakeOrder.as_view(), name='order_success_url'),
+    path('account/', account, name='account_url'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

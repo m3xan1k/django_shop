@@ -19,6 +19,15 @@
         <li class="nav-item">
           <a class="nav-link" href="#">Контакт</a>
         </li>
+        {% if not request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="#">Здравствуйте, гость</a>
+          </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'account_url' %}">Здравствуйте, {{ request.user }}</a>
+        </li>
+        {% endif %}
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a class="nav-link" href="{% url 'cart_url' %}">Корзина <span class="badge badge-secondary" id='cart-count'>{{ cart.items.count }}</span></a></li>

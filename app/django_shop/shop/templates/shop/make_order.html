@@ -1,0 +1,86 @@
+{% extends 'shop/base_shop.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<h2 class="text-center mb-5">Оформление заказа</h2>
+
+<div class="my-cart">
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Товар</th>
+      <th scope="col">Количество</th>
+      <th scope="col">Цена</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in cart.items.all %}
+    <tr>
+      <td><a href="{{item.product.get_absolute_url}}">{{ item.product.title }}</a></td>
+      <td><p>{{ item.qty }}</p></td>
+      <td>{{ item.item_total }}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td></td>
+      <td>Итого:</td>
+      <td><strong>{{ cart.cart_total }}</strong></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+<h6 class="mb-4">Все поля, кроме комметария, обязательно нужно заполнить</h6>
+
+<form method="post" action="{% url 'order_success_url' %}">
+  {% csrf_token %}
+  {% for field in form %}
+    {% if field.errors %}
+    <div class="alert alert-danger">
+      {{ field.errors }}
+    </div>
+    {% endif %}
+    <div class="form-group">
+      {% if field.name == 'buying_type' %}
+        {{ field.label }}
+      {% endif %}
+      {{ field }}
+      {% if field.help_text %}
+        <p class="help">{{ field.help_text|safe }}</p>
+      {% endif %}
+      {% if field.name == 'email' %}
+      <small id="emailHelp" class="form-text text-muted">Мы не передаем ваш адрес почты третьим лицам</small>
+      {% elif field.name == 'delivery_date' %}
+      <small id="emailHelp" class="form-text text-muted">Выберите дату доставки</small>
+      {% endif %}
+    </div>
+  {% endfor %}
+  <button type="submit" class="btn btn-success">Заказать</button>
+</form>
+
+
+<script src="{% static 'js/vendor/jquery/jquery.min.js' %}"></script>
+<script>
+  $(document).ready(function(){
+    $(document).on('click', 'option', function(e){
+      address = $('#id_address')
+      value = $(this).val()
+      if (value === 'Самовывоз'){
+        address.prop('readonly', true)
+      }
+      else {
+        address.prop('readonly', false)
+      }
+    })
+  })
+</script>
+
+
+
+
+{% endblock %}
