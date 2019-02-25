@@ -1,0 +1,35 @@
+{% extends 'shop/base_shop.html' %}
+
+{% block title %}
+
+Регистрация - {{ block.super }}
+
+{% endblock %}
+
+{% block content %}
+
+
+<h2>Регистрация в интернет-магазине SMPGEO.RU</h2>
+
+<form class="" action="{% url 'registration_url' %}" method="POST">
+  {% csrf_token %}
+
+  {% for field in form %}
+
+    {% if field.errors %}
+      <div class="alert alert-danger">
+        {{ field.errors }}
+      </div>
+    {% endif %}
+    <div class="form-group">
+      {% if field.name == 'password_check' %}
+        {{ field.label }}
+      {% endif %}
+      {{ field }}
+    </div>
+  {% endfor %}
+  <button type="submit" class="btn btn-success">Подтвердить</button>
+</form>
+
+
+{% endblock %}

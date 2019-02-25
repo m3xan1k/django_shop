@@ -4,16 +4,5 @@
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-shop-homepage/blob/master/LICENSE)
  */
 body {
-  padding-top: 56px;
-}
-
-#categories-sidebar {
-  position: fixed;
-  display:-ms-flexbox;
-  display:flex;
-  -ms-flex-direction:column;
-  flex-direction:column;
-  padding-left:0;
-  margin-bottom:0
-
+  padding-top: 90px;
 }

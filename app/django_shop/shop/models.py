@@ -134,7 +134,7 @@ ORDER_BUYING_TYPE = (
 )
 
 class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
     items = models.ManyToManyField(Cart)
     total = models.DecimalField(max_digits=9, decimal_places=2, default=0.00)
     first_name = models.CharField(max_length=50)

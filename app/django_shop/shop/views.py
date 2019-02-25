@@ -4,6 +4,7 @@ from django.views.generic import View
 from django.http import JsonResponse
 from decimal import Decimal
 from .forms import *
+from django.contrib.auth import login, authenticate
 
 
 
@@ -145,21 +146,14 @@ def change_item_qty(request):
 
 
 def create_order_object(request, bound_form, cart):
-    order = Order()
-    order.user = request.user
-    order.save()
-    order.first_name = bound_form.cleaned_data['first_name']
-    order.last_name = bound_form.cleaned_data['last_name']
-    order.phone = bound_form.cleaned_data['phone']
-    order.email = bound_form.cleaned_data['email']
-    order.buying_type = bound_form.cleaned_data['buying_type']
-    order.address = bound_form.cleaned_data['address']
-    order.delivery_date = bound_form.cleaned_data['delivery_date']
-    order.comments = bound_form.cleaned_data['comments']
-    order.total = cart.cart_total
-    order.items.add(cart)
-    order.save()
-    return order
+    new_order = bound_form.save(commit=False)
+    if request.user.is_authenticated:
+        new_order.user = request.user
+    new_order.save()
+    new_order.total = cart.cart_total
+    new_order.items.add(cart)
+    new_order.save()
+    return new_order
 
 class MakeOrder(View):
     def get(self, request):
@@ -190,3 +184,43 @@ def account(request):
     for order in orders:
         print(order.__dict__)
     return render(request, 'shop/account.html', context={'orders': orders})
+
+class Registration(View):
+    def get(self, request):
+        form = RegistrationForm()
+        return render(request, 'shop/registration.html', context={'form': form})
+    def post(self, request):
+        bound_form = RegistrationForm(request.POST)
+        if bound_form.is_valid():
+            new_registration = bound_form.save(commit=False)
+            new_registration.username = bound_form.cleaned_data['username']
+            new_registration.set_password(bound_form.cleaned_data['password'])
+            new_registration.first_name = bound_form.cleaned_data['first_name']
+            new_registration.last_name = bound_form.cleaned_data['last_name']
+            new_registration.email = bound_form.cleaned_data['email']
+            new_registration.active=True
+            new_registration.staff=False
+            new_registration.admin=False
+            new_registration.save()
+            return render(request, 'shop/login.html', context={'new_registration': new_registration})
+        return render(request, 'shop/registration.html', context={'form': bound_form})
+
+
+class Login(View):
+    def get(self, request):
+        form = LoginForm()
+        return render(request, 'shop/login.html', context={'form': form})
+    def post(self, request):
+        bound_form = LoginForm(request.POST)
+        if bound_form.is_valid():
+            username = bound_form.cleaned_data['username']
+            password = bound_form.cleaned_data['password']
+            user = authenticate(username=username, password=password, request=request)
+            if user is None:
+                return render(request, 'shop/login.html', context={'form': bound_form})
+            if not user.is_active:
+                return render(request, 'shop/login.html', context={'form': bound_form})
+            login(request, user)
+            return redirect('index_url')
+                # return render(request, 'shop/index.html', context)
+        return render(request, 'shop/login.html', context={'form': bound_form})
