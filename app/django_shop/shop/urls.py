@@ -16,5 +16,5 @@ urlpatterns = [
     path('account/', account, name='account_url'),
     path('registration/', Registration.as_view(), name='registration_url'),
     path('login/', Login.as_view(), name='login_url'),
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('logout/', logout_user, name='logout_url')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

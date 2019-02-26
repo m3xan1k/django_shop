@@ -4,11 +4,23 @@ from django.views.generic import View
 from django.http import JsonResponse
 from decimal import Decimal
 from .forms import *
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, logout, authenticate
 
 
 
 def create_cart(request):
+    # connect authenticated user with his cart
+    # user = request.user
+    # if user.is_authenticated:
+    #     try:
+    #         cart = Cart.objects.get(user=user)
+    #         request.session['total'] = cart.items.count()
+    #         return cart
+    #     except:
+    #         cart = Cart()
+    #         cart.save()
+    #         cart_id = cart.id
+    #         request.session['cart_id'] = cart_id
     # initialize cart from session
     try:
         cart_id = request.session['cart_id']
@@ -121,12 +133,6 @@ class DeleteFromCart(View):
             'cart_items_count': cart.items.count(),
             'cart_total': cart.cart_total,
             })
-    # def post(self, request, slug):
-    #     cart = create_cart(request)
-    #     product = Product.objects.get(slug__iexact=slug)
-    #     item = CartItem.objects.get(product=product)
-    #     item.delete()
-    #     return redirect('/cart/')
 
 
 def change_item_qty(request):
@@ -159,7 +165,11 @@ class MakeOrder(View):
     def get(self, request):
         cart = create_cart(request)
         cart.recount_cart()
-        form = OrderForm()
+        u = request.user
+        if u.is_authenticated:
+            form = OrderForm(initial={'first_name': u.first_name, 'last_name': u.last_name, 'email': u.email})
+        else:
+            form = OrderForm()
         context = {
             'cart': cart,
             'form': form,
@@ -180,10 +190,14 @@ class MakeOrder(View):
 
 
 def account(request):
+    cart = create_cart(request)
+    cart.recount_cart()
     orders = Order.objects.filter(user=request.user).order_by('-id')
-    for order in orders:
-        print(order.__dict__)
-    return render(request, 'shop/account.html', context={'orders': orders})
+    context = {
+        'cart': cart,
+        'orders': orders,
+    }
+    return render(request, 'shop/account.html', context=context)
 
 class Registration(View):
     def get(self, request):
@@ -222,5 +236,8 @@ class Login(View):
                 return render(request, 'shop/login.html', context={'form': bound_form})
             login(request, user)
             return redirect('index_url')
-                # return render(request, 'shop/index.html', context)
         return render(request, 'shop/login.html', context={'form': bound_form})
+
+def logout_user(request):
+    logout(request)
+    return redirect('index_url')

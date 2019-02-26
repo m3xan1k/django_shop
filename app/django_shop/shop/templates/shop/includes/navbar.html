@@ -30,6 +30,9 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'account_url' %}">Личный кабинет, {{ request.user }}</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout_url' %}">Выход</a>
+        </li>
         {% endif %}
 
         <li><a class="nav-link" href="{% url 'cart_url' %}">Корзина <span class="badge badge-secondary" id='cart-count'>{{ cart.items.count }}</span></a></li>

@@ -9,6 +9,8 @@
 
 <h3 class="text-center mb-5">Добро пожаловать в личный кабинет, {{ user }}</h3>
 
+{% if orders %}
+
 <h4 class="text-center"></h4>
 <table class="table">
   <thead class="thead-light">
@@ -17,27 +19,77 @@
     <th scope="col">Дата</th>
     <th scope="col">Статус</th>
     <th scope="col">Стоимость</th>
-    <th scope="col">Детали</th>
-    <th scope="col"></th>
+    <th scope="col">Детали заказа</th>
   </tr>
   </thead>
-  <tbody>
 
 
   {% for order in orders %}
+  <tbody>
   <tr>
     <td>{{ order.id }}</td>
     <td>{{ order.date }}</td>
     <td>{{ order.status }}</td>
-    <td>{{ order.total }}</td>
-    <td></td>
+    <td>{{ order.total }} ₽</td>
+    <td><!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal-{{ order.id }}">
+    Детали заказа №{{ order.id }}
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal-{{ order.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Заказ №{{ order.id }}</h5>
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+        </div>
+        <div class="modal-body">
+          <h4>Товар</h4>
+          {% for item in order.items.all %}
+            {% for order_item in item.items.all %}
+            <table>
+              <tr>
+                <td>{{ order_item.product.title }}</td>
+                <td>{{ order_item.qty }} шт</td>
+                <td>{{ order_item.item_total }} ₽</td>
+              </tr>
+              {% endfor %}
+            {% endfor %}
+              <tr>
+                <td></td>
+                <td>Итого</td>
+                <td>{{ order.total }} ₽</td>
+              </tr>
+          </table>
+          <h4>Заказчик</h4>
+            <p>Имя: {{ order.first_name }}</p>
+            <p>Фамилия: {{ order.last_name }}</p>
+            <p>Телефон: {{ order.phone }}</p>
+          <h4>Тип доставки</h4>
+            <p>{{ order.buying_type }}</p>
+            <p>{{ order.address }}</p>
+          <h4>Комментарии к заказу</h4>
+            <p>{{ order.comments }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+          <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        </div>
+      </div>
+    </div>
+    </div></td>
     <td></td>
   </tr>
-  {% endfor %}
-    </tbody>
+{% endfor %}
+</tbody>
 </table>
-{% if not orders %}
-<h3 class="text-center">У вас пока нет заказов</h3>
+
+
+{% else %}
+  <h3 class="text-center">У вас пока нет заказов</h3>
 {% endif %}
 
 

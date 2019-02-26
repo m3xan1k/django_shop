@@ -8,6 +8,8 @@ from django.urls import reverse
 from django.conf import settings
 from django.utils import timezone
 
+from django.contrib.auth.models import User
+
 # Create your models here.
 
 def gen_slug(title):
@@ -100,6 +102,7 @@ class Cart(models.Model):
 
     items = models.ManyToManyField(CartItem, blank=True)
     cart_total = models.DecimalField(max_digits=9, decimal_places=2, default=0.00)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.id)

@@ -21,13 +21,13 @@
     <tr>
       <td><a href="{{item.product.get_absolute_url}}">{{ item.product.title }}</a></td>
       <td><p>{{ item.qty }}</p></td>
-      <td>{{ item.item_total }}</td>
+      <td>{{ item.item_total }} ₽</td>
     </tr>
     {% endfor %}
     <tr>
       <td></td>
       <td>Итого:</td>
-      <td><strong>{{ cart.cart_total }}</strong></td>
+      <td><strong>{{ cart.cart_total }} ₽</strong></td>
       <td></td>
     </tr>
   </tbody>
@@ -46,17 +46,11 @@
     </div>
     {% endif %}
     <div class="form-group">
-      {% if field.name == 'buying_type' %}
-        {{ field.label }}
-      {% endif %}
       {{ field }}
       {% if field.help_text %}
-        <p class="help">{{ field.help_text|safe }}</p>
-      {% endif %}
-      {% if field.name == 'email' %}
-      <small id="emailHelp" class="form-text text-muted">Мы не передаем ваш адрес почты третьим лицам</small>
-      {% elif field.name == 'delivery_date' %}
-      <small id="emailHelp" class="form-text text-muted">Выберите дату доставки</small>
+        <small class="form-text text-muted">
+          {{ field.help_text|safe }}
+        </small>
       {% endif %}
     </div>
   {% endfor %}

@@ -34,14 +34,14 @@
             <input class="cart-item-qty" data-id="{{ item.id }}" type="number" name="qty" value="{{item.qty}}" min="1">
           </form>
         </td>
-        <td id="cart-item-total-{{ item.id }}">{{item.item_total}}</td>
+        <td id="cart-item-total-{{ item.id }}">{{item.item_total}} ₽</td>
         <td><a href="#" class="remove-from-cart btn btn-danger" data-slug="{{ item.product.slug }}">Удалить</a></td>
       </tr>
       {% endfor %}
       <tr>
         <td></td>
         <td></td>
-        <td class="cart-total-count" data-total="{{ cart.cart_total }}"><strong>{{ cart.cart_total }}</strong></td>
+        <td class="cart-total-count" data-total="{{ cart.cart_total }}"><strong>{{ cart.cart_total }} ₽</strong></td>
         <td></td>
       </tr>
       <tr>
@@ -101,7 +101,7 @@
         url: '{% url "change_item_qty_url" %}',
         data: data,
         success: function(data){
-          $('#cart-item-total-'+item_id).html(parseFloat(data.item_total).toFixed(2) + ' руб')
+          $('#cart-item-total-'+item_id).html(parseFloat(data.item_total).toFixed(2) + ' ₽')
           $('.cart-total-count').html(data.cart_total)
         }
       })
