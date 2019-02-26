@@ -152,12 +152,21 @@ def change_item_qty(request):
 
 
 def create_order_object(request, bound_form, cart):
-    new_order = bound_form.save(commit=False)
+    new_order = Order.objects.create(
+        items=cart,
+        first_name=bound_form.cleaned_data['first_name'],
+        last_name=bound_form.cleaned_data['last_name'],
+        phone=bound_form.cleaned_data['phone'],
+        email=bound_form.cleaned_data['email'],
+        buying_type=bound_form.cleaned_data['buying_type'],
+        address=bound_form.cleaned_data['address'],
+        delivery_date=bound_form.cleaned_data['delivery_date'],
+        comments=bound_form.cleaned_data['comments']
+    )
     if request.user.is_authenticated:
         new_order.user = request.user
     new_order.save()
     new_order.total = cart.cart_total
-    new_order.items.add(cart)
     new_order.save()
     return new_order
 
@@ -170,6 +179,7 @@ class MakeOrder(View):
             form = OrderForm(initial={'first_name': u.first_name, 'last_name': u.last_name, 'email': u.email})
         else:
             form = OrderForm()
+        print(cart.items.all())
         context = {
             'cart': cart,
             'form': form,

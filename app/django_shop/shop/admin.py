@@ -3,6 +3,17 @@ from .models import *
 
 # Register your models here.
 
+admin.site.site_header = 'СМПГЕО интернет-магазин'
+admin.site.site_title = 'Управление магазином СМПГЕО'
+
+
+# class OrderDetailAdmin(admin.ModelAdmin):
+#     change_list_template = 'shop/order_detail_change_list.html'
+#     date_hierarchy = 'date'
+
+
+
+
 class CategoryAdmin(admin.ModelAdmin):
     readonly_fields = ('slug', )
 
@@ -25,3 +36,4 @@ admin.site.register(SliderImage)
 admin.site.register(Cart)
 admin.site.register(CartItem)
 admin.site.register(Order, OrderAdmin)
+# admin.site.register(OrderDetail, OrderDetailAdmin)

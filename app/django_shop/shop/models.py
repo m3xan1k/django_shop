@@ -138,7 +138,7 @@ ORDER_BUYING_TYPE = (
 
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
-    items = models.ManyToManyField(Cart)
+    items = models.ForeignKey(Cart, on_delete=models.CASCADE, blank=True)
     total = models.DecimalField(max_digits=9, decimal_places=2, default=0.00)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -153,3 +153,10 @@ class Order(models.Model):
 
     def __str__(self):
         return f'Заказ №{self.id}'
+
+# # making view for orders
+# class OrderDetail(Order):
+#     # enable proxy extends functionality withou creating table in database
+#     proxy = True
+#     verbose_name = 'Детали заказа'
+#     verbose_name_plural = 'Детали заказа'

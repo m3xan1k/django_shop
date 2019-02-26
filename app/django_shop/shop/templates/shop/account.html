@@ -48,15 +48,14 @@
         </div>
         <div class="modal-body">
           <h4>Товар</h4>
-          {% for item in order.items.all %}
-            {% for order_item in item.items.all %}
             <table>
+            {% for order_item in order.items.items.all %}
+
               <tr>
                 <td>{{ order_item.product.title }}</td>
                 <td>{{ order_item.qty }} шт</td>
                 <td>{{ order_item.item_total }} ₽</td>
               </tr>
-              {% endfor %}
             {% endfor %}
               <tr>
                 <td></td>
