@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from decimal import Decimal
 from .forms import *
 from django.contrib.auth import login, logout, authenticate
+from django.contrib import messages
 
 
 
@@ -226,7 +227,8 @@ class Registration(View):
             new_registration.staff=False
             new_registration.admin=False
             new_registration.save()
-            return render(request, 'shop/login.html', context={'new_registration': new_registration})
+            messages.success(request, 'Вы успешно зарегистрировались в магазине SMPGEO.RU\nМы продублировали учетные данные вам на почту')
+            return redirect('login_url')
         return render(request, 'shop/registration.html', context={'form': bound_form})
 
 

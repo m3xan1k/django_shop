@@ -10,9 +10,10 @@
 
 <h2 class="text-center">Вход</h2>
 
-{% if new_registration %}
-<h3 class="text-center">Вы успешно зарегистрировались в магазине SMPGEO.RU</h3>
-<h4 class="text-center">Мы продублировали учетные данные вам на почту</h4>
+{% if messages %}
+{% for message in messages %}
+  <h4 class="text-center">{{ message }}</h4>
+{% endfor %}
 {% endif %}
 <form action="{% url 'login_url' %}" method="post">
   {% csrf_token %}
@@ -27,9 +28,9 @@
     <div class="form-group">
       {{ field }}
       {% if field.help_text %}
-      <small class="form-text text-muted">
-        {{ field.help_text }}
-      </small>
+        <small class="form-text text-muted">
+          {{ field.help_text }}
+        </small>
       {% endif %}
     </div>
   {% endfor %}
