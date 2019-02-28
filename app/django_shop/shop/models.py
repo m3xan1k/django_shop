@@ -19,9 +19,6 @@ def gen_slug(title):
         new_slug = slugify(title, allow_unicode=True)
     return new_slug + '-' + str(int(time()))
 
-class ProductManager(models.Manager):
-    def all(self, *args, **kwargs):
-        return super(ProductManager, self).get_queryset().filter(available=True)
 
 class Category(models.Model):
     title = models.CharField(max_length=100)
@@ -37,6 +34,9 @@ class Category(models.Model):
 
     def get_absolute_url(self):
         return reverse('category_detail_url', kwargs={'slug': self.slug})
+
+    class Meta:
+        ordering = ['title']
 
 
 class Brand(models.Model):
@@ -62,7 +62,9 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=9, decimal_places=2)
     available = models.BooleanField(default=True)
 
-    objects = ProductManager()
+    class Meta:
+        ordering = ['-price']
+
 
     def __str__(self):
         return self.title
@@ -128,7 +130,8 @@ class Cart(models.Model):
 ORDER_STATUS_CHOICES = (
     ('Принят в обработку', 'Принят в обработку'),
     ('Выполняется', 'Выполняется'),
-    ('Оплачен', 'Оплачен')
+    ('Оплачен', 'Оплачен'),
+    ('Отгружен', 'Отгружен')
 )
 
 ORDER_BUYING_TYPE = (
@@ -153,6 +156,10 @@ class Order(models.Model):
 
     def __str__(self):
         return f'Заказ №{self.id}'
+
+    def details(self):
+        for item in self.items.items.all():
+            print(item.product.title, item.qty)
 
 # # making view for orders
 # class OrderDetail(Order):

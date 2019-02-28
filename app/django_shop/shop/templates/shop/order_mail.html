@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div>
+      <h2>Заказ №{{ order.id }}</h2>
+      <hr>
+      <h4>Товар</h4>
+        <table>
+        {% for order_item in order.items.items.all %}
+
+          <tr>
+            <td>{{ order_item.product.title }}</td>
+            <td>{{ order_item.qty }} шт</td>
+            <td>{{ order_item.item_total }} ₽</td>
+          </tr>
+        {% endfor %}
+          <tr>
+            <td></td>
+            <td>Итого</td>
+            <td>{{ order.total }} ₽</td>
+          </tr>
+      </table>
+      <h4>Заказчик</h4>
+        <p>Имя: {{ order.first_name }}</p>
+        <p>Фамилия: {{ order.last_name }}</p>
+        <p>Телефон: {{ order.phone }}</p>
+      <h4>Тип доставки</h4>
+        <p>{{ order.buying_type }}</p>
+        <p>{{ order.address }}</p>
+      <h4>Комментарии к заказу</h4>
+        <p>{{ order.comments }}</p>
+    </div>
+  </body>
+</html>

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -132,3 +133,12 @@ STATICFILES_DIRS = (
 # AUTHENTICATION_BACKENDS = (
 #     'django.contrib.auth.backends.ModelBackend',
 # )
+
+with open(BASE_DIR + '/email_settings.json', 'r') as f:
+    email_settings = json.load(f)
+
+EMAIL_HOST = email_settings['email_host']
+EMAIL_HOST_USER = email_settings['email_host_user']
+EMAIL_HOST_PASSWORD = email_settings['email_host_password']
+EMAIL_PORT = email_settings['email_port']
+EMAIL_USE_SSL = True

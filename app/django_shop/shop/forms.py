@@ -103,3 +103,17 @@ class LoginForm(forms.Form):
         if user and not user.check_password(password):
             raise forms.ValidationError('Неправильный пароль')
         return self.cleaned_data
+
+
+class PasswordResetForm(forms.Form):
+    email = forms.EmailField(help_text='Введите email, указанный при регистрации')
+
+    email.widget.attrs.update({'class': 'form-control', 'placeholder': 'Ваш email'})
+
+    def clean(self):
+        email = self.cleaned_data['email']
+
+        if not User.objects.filter(email=email):
+            raise forms.ValidationError('Пользователь с адресом {} не найден'.format(email))
+
+        return self.cleaned_data

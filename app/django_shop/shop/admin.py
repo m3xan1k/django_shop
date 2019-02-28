@@ -14,6 +14,7 @@ admin.site.site_title = 'Управление магазином СМПГЕО'
 
 
 
+
 class CategoryAdmin(admin.ModelAdmin):
     readonly_fields = ('slug', )
 

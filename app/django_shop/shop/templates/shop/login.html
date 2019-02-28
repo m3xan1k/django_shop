@@ -34,6 +34,10 @@
       {% endif %}
     </div>
   {% endfor %}
+  <small class="form-text text-muted">
+    <a href="{% url 'password_reset_url' %}">Восстановить пароль?</a>
+  </small>
+  <br>
   <button type="submit" class="btn btn-success btn-block">Войти</button>
 </form>
 

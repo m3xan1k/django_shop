@@ -21,9 +21,18 @@
             <p class="card-text">{{ product.description }}</p>
             <span class="text-warning">{{ product.category }} {{ product.brand }}</span>
             {% if product.title in cart_items %}
-              <a href="#" class="add-to-cart" data-slug="{{ product.slug }}"><button class="btn btn-primary" disabled>Товар в корзине</button></a>
+              <a href="#" class="add-to-cart" data-slug="{{ product.slug }}"><button class="btn btn-success" disabled>Товар в корзине</button></a>
+            {% elif not product.available %}
+                <a href="#" class="add-to-cart" data-slug="{{ product.slug }}"><button class="btn btn-warning" disabled>Нет в наличии</button></a>
             {% else %}
-              <a href="#" class="add-to-cart" data-slug="{{ product.slug }}"><button class="btn btn-primary">В корзину</button></a>
+              <a href="#" class="add-to-cart" data-slug="{{ product.slug }}"><button class="btn btn-success">В корзину</button></a>
+            {% endif %}
+          </div>
+          <div class="card-footer">
+            {% if product.available %}
+            <small class="text-success">Есть в наличии</small>
+            {% else %}
+            <small class="text-warning">Нет в наличии</small>
             {% endif %}
           </div>
         </div>
