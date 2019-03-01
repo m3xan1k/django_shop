@@ -2,7 +2,7 @@
 {% extends 'shop/base_shop.html' %}
 {% load static %}
 {% block title %}
-  {{ product.title }} - {{ block.super }}
+  Купить {{ product.category }} в Москве — {{ product.title|truncatewords:4 }} | {{ block.super }}
 {% endblock %}
 
 {% block content %}
@@ -12,14 +12,27 @@
   <!-- /.col-lg-3 -->
 
   <div class="col-lg-9">
+    <div class="row">
+      <div class="container">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'shop_main_url' %}">Каталог</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'category_detail_url' slug=current_category.slug %}">{{ current_category.title }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.title|truncatewords:5 }}</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+    <div class="header">
+      <h1>{{ product.title }}</h1>
+    </div>
 
 <div class="card mt-4">
           <img class="card-img-top img-fluid" src="{{ product.image.url }}" alt="{{ product.title }}" style="height:300px; width:300px;">
           <div class="card-body">
-            <h3 class="card-title">{{ product.title }}</h3>
-            <h4>{{ product.price }} ₽</h4>
-            <p class="card-text">{{ product.description }}</p>
-            <span class="text-warning">{{ product.category }} {{ product.brand }}</span>
+            <h2 class="card-title">Купить {{ product.title }}</h2>
+            <h3>{{ product.price }} ₽</h3>
+            <p class="card-text">{{ product.description|safe }}</p>
             {% if product.title in cart_items %}
               <a href="#" class="add-to-cart" data-slug="{{ product.slug }}"><button class="btn btn-success" disabled>Товар в корзине</button></a>
             {% elif not product.available %}
@@ -35,12 +48,18 @@
             <small class="text-warning">Нет в наличии</small>
             {% endif %}
           </div>
+          <div class="card-footer">
+            <span class="text-warning">{{ product.category }} {{ product.brand }}</span>
+          </div>
         </div>
 </div>
 </div>
         <!-- /.card -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-        <script src="{% static 'js/vendor/jquery/jquery.min.js' %}"></script>
+        <script type="text/javascript">window.jQuery || document.write('<script type="text/javascript" src="{% static 'js/vendor/jquery/jquery.min.js' %}"><\/script>');</script>
+
+        <!-- <script src="{% static 'js/vendor/jquery/jquery.min.js' %}"></script> -->
         <script>
           $(document).ready(function(){
             $(document).on('click', '.add-to-cart', function(e){

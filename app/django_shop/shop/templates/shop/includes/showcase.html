@@ -1,15 +1,33 @@
 <div class="row">
+  <div class="container">
+    {% if current_category %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'shop_main_url' %}">Каталог</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ current_category }}</li>
+      </ol>
+    </nav>
+    {% else %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Каталог</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+{% endif %}
 
+<div class="row">
 {% for product in page.object_list %}
   <div class="col-lg-4 col-md-6 mb-4">
     <div class="card h-100">
-      <a href="#"><img class="card-img-top" src="{{ MEDIA_URL }}{{ product.image.url }}" alt="" style="width: 250px; height: 180px;"></a>
+      <a href="#"><img class="card-img-top" src="{{ MEDIA_URL }}{{ product.image.url }}" alt="{{ product.title }}" style="width: 250px; height: 180px;"></a>
       <div class="card-body">
         <h5 class="card-title">
           <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
         </h5>
         <h6>{{ product.price }} ₽</h6>
-        <p class="card-text">{{ product.description|truncatewords:15 }}</p>
+        <p class="card-text">{{ product.description|truncatewords:15|safe }}</p>
       </div>
 
       <div class="card-footer">

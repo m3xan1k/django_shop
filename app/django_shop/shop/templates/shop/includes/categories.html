@@ -1,6 +1,6 @@
 <div class="col-lg-3 mt-4" >
     <div class="list-group">
-      <a href="{% url 'index_url' %}" class="list-group-item list-group-item-action list-group-item-dark">Показать всё</a>
+      <a href="{% url 'shop_main_url' %}" class="list-group-item list-group-item-action list-group-item-dark">Показать всё</a>
       {% for category in categories %}
       {% if category.title == current_category.title %}
       <a href="{{ category.get_absolute_url }}" class="list-group-item list-group-item-action list-group-item-secondary active">{{category.title}}</a>

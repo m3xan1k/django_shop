@@ -1,0 +1,10 @@
+{% if product %}
+<meta name="description" content="{{ product.meta_description }}">
+<meta name="keywords" content="{{ product.meta_keywords }}">
+{% elif current_category %}
+<meta name="description" content="{{ current_category.meta_description }}">
+<meta name="keywords" content="{{ current_category.meta_keywords }}">
+{% else %}
+<meta name="description" content="Оборудование для высокоточных измерений: в наличии большой выбор по доступным ценам. Вы можете взять в аренду лазерный трекер, лазерный сканер, инженерный тахеометр. Возможно купить б/у оборудование для геометрических измерений и обмерных работ, а также заказать комплекс работ и услуг в области промышленной геодезии в интернет-магазине СМПГЕО .">
+<meta name="keywords" content="лазерный трекер, роботизированный тахеометр, геодезические услуги, аренда тахеометра, выверка конструкций, выверка промышленного оборудования, высокоточные геодезические измерения, обмерные работы москва">
+{% endif %}

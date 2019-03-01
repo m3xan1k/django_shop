@@ -13,17 +13,6 @@ body {
     background: #fff;
 }
 
-body:before {
-    display: block;
-    line-height: 35px;
-    text-align: center;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: white;
-    content: "РАЗРАБОТКА";
-    background-color: lightgrey;
-}
-
 /* LINKS */
 
 a:link, a:visited {

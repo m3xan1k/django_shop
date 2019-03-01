@@ -9,6 +9,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from django.contrib.auth.models import User
+from ckeditor_uploader.fields import RichTextUploadingField
 
 # Create your models here.
 
@@ -23,6 +24,8 @@ def gen_slug(title):
 class Category(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True, blank=True)
+    meta_description = models.TextField(blank=True)
+    meta_keywords = models.TextField(blank=True)
 
     def __str__(self):
         return self.title
@@ -41,6 +44,8 @@ class Category(models.Model):
 
 class Brand(models.Model):
     title = models.CharField(max_length=100)
+    meta_description = models.TextField(blank=True)
+    meta_keywords = models.TextField(blank=True)
     def __str__(self):
         return self.title
 
@@ -57,10 +62,12 @@ class Product(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, blank=True, unique=True)
-    description = models.TextField()
+    description = RichTextUploadingField()
     image = models.ImageField(upload_to=image_folder)
     price = models.DecimalField(max_digits=9, decimal_places=2)
     available = models.BooleanField(default=True)
+    meta_description = models.TextField(blank=True)
+    meta_keywords = models.TextField(blank=True)
 
     class Meta:
         ordering = ['-price']

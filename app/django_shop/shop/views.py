@@ -16,19 +16,7 @@ from django.core.paginator import Paginator
 
 #  initialize cart in current session
 def create_cart(request):
-    # connect authenticated user with his cart
-    # user = request.user
-    # if user.is_authenticated:
-    #     try:
-    #         cart = Cart.objects.get(user=user)
-    #         request.session['total'] = cart.items.count()
-    #         return cart
-    #     except:
-    #         cart = Cart()
-    #         cart.save()
-    #         cart_id = cart.id
-    #         request.session['cart_id'] = cart_id
-    # initialize cart from session
+
     try:
         # define cart_id to request.session['cart_id']
         cart_id = request.session['cart_id']
@@ -49,9 +37,91 @@ def create_cart(request):
     return cart
 
 
+def create_order_object(request, bound_form, cart):
+    # collect all data to create order object
+    new_order = Order.objects.create(
+        items=cart,
+        first_name=bound_form.cleaned_data['first_name'],
+        last_name=bound_form.cleaned_data['last_name'],
+        phone=bound_form.cleaned_data['phone'],
+        email=bound_form.cleaned_data['email'],
+        buying_type=bound_form.cleaned_data['buying_type'],
+        address=bound_form.cleaned_data['address'],
+        delivery_date=bound_form.cleaned_data['delivery_date'],
+        comments=bound_form.cleaned_data['comments']
+    )
+
+    # if user is registered, save order.user to base, if anonymous user will be blank(or None)
+    if request.user.is_authenticated:
+        new_order.user = request.user
+    new_order.save()
+    new_order.total = cart.cart_total
+    new_order.save()
+    return new_order
+
+
+def send_order_mail(order, email):
+
+    # order details in context
+    context = {
+        'order': order,
+    }
+
+    # creating a list where will be a customers email, and staff email will append later
+    mail_to = [email]
+    staff = User.objects.filter(is_staff=True)
+    for member in staff:
+        mail_to.append(member.email)
+
+    # render order details to html template
+    html_content = render_to_string('shop/order_mail.html', context)
+
+    # constructing email with all args
+    mail = EmailMessage('Заказ в магазине СМПГЕО', html_content, 'job.shevtsov@ya.ru', mail_to)
+
+    # switch mail body content type to html
+    mail.content_subtype = 'html'
+
+    # send mail
+    mail.send()
+
+
+# send mail to user with registration information
+def send_reg_mail(username, password, email):
+
+    # collect info to context
+    context = {
+        'username': username,
+        'password': password,
+        'email': email
+    }
+
+    # render context to html template
+    html_content = render_to_string('shop/reg_mail.html', context)
+
+    # construct email
+    mail = EmailMessage('Регистрация в магазине СМПГЕО', html_content, 'job.shevtsov@ya.ru', [email])
+
+    # define content type to html
+    mail.content_subtype = 'html'
+
+    # send it
+    mail.send()
+
+
+# logout user function
+def logout_user(request):
+    logout(request)
+    return redirect('shop_main_url')
+
+
+# Views start here
+
+
 def shop_main(request):
     # cart initialize
     cart = create_cart(request)
+    print(request._get_full_path)
 
     # get all categories, products, slider images to render them on page
     categories = Category.objects.all()
@@ -77,7 +147,7 @@ def shop_main(request):
         'cart': cart,
     }
 
-    return render(request, 'shop/index.html', context=context)
+    return render(request, 'shop/shop_main.html', context=context)
 
 
 class ProductDetail(View):
@@ -86,6 +156,7 @@ class ProductDetail(View):
         # get product by slug, define categories and initialize cart
         product = Product.objects.get(slug__iexact=slug)
         categories = Category.objects.all()
+        current_category = product.category
         cart = create_cart(request)
 
         # filter products that are in cart as cart items to disable add-to-cart buttons
@@ -95,6 +166,7 @@ class ProductDetail(View):
         # collect context and render to html
         context = {
             'categories': categories,
+            'current_category': current_category,
             'product': product,
             'cart_items': cart_items,
             'cart': cart,
@@ -191,79 +263,30 @@ class DeleteFromCart(View):
 
 
 # recount item qty in cart
-def change_item_qty(request):
+class ChangeItemQty(View):
+    def get(self, request):
+        # cart init
+        cart = create_cart(request)
 
-    # cart init
-    cart = create_cart(request)
+        # get cart item qty and item id from get request by jquery
+        qty = request.GET.get('qty')
+        item_id = request.GET.get('item_id')
 
-    # get cart item qty and item id from get request by jquery
-    qty = request.GET.get('qty')
-    item_id = request.GET.get('item_id')
+        # find cart item by id and change qty and item_total, save this to database
+        cart_item = CartItem.objects.get(id=int(item_id))
+        cart_item.qty = int(qty)
+        cart_item.item_total = int(qty) * Decimal(cart_item.product.price)
+        cart_item.save()
 
-    # find cart item by id and change qty and item_total, save this to database
-    cart_item = CartItem.objects.get(id=int(item_id))
-    cart_item.qty = int(qty)
-    cart_item.item_total = int(qty) * Decimal(cart_item.product.price)
-    cart_item.save()
+        # recount cart
+        cart.recount_cart()
 
-    # recount cart
-    cart.recount_cart()
-
-    # return all data as json to ajax
-    return JsonResponse({
-        'cart_items_count': cart.items.count(),
-        'item_total': cart_item.item_total,
-        'cart_total': cart.cart_total,
-        })
-
-
-def create_order_object(request, bound_form, cart):
-    # collect all data to create order object
-    new_order = Order.objects.create(
-        items=cart,
-        first_name=bound_form.cleaned_data['first_name'],
-        last_name=bound_form.cleaned_data['last_name'],
-        phone=bound_form.cleaned_data['phone'],
-        email=bound_form.cleaned_data['email'],
-        buying_type=bound_form.cleaned_data['buying_type'],
-        address=bound_form.cleaned_data['address'],
-        delivery_date=bound_form.cleaned_data['delivery_date'],
-        comments=bound_form.cleaned_data['comments']
-    )
-
-    # if user is registered, save order.user to base, if anonymous user will be blank(or None)
-    if request.user.is_authenticated:
-        new_order.user = request.user
-    new_order.save()
-    new_order.total = cart.cart_total
-    new_order.save()
-    return new_order
-
-
-def send_order_mail(order, email):
-
-    # order details in context
-    context = {
-        'order': order,
-    }
-
-    # creating a list where will be a customers email, and staff email will append later
-    mail_to = [email]
-    staff = User.objects.filter(is_staff=True)
-    for member in staff:
-        mail_to.append(member.email)
-
-    # render order details to html template
-    html_content = render_to_string('shop/order_mail.html', context)
-
-    # constructing email with all args
-    mail = EmailMessage('Заказ в магазине СМПГЕО', html_content, 'job.shevtsov@ya.ru', mail_to)
-
-    # switch mail body content type to html
-    mail.content_subtype = 'html'
-
-    # send mail
-    mail.send()
+        # return all data as json to ajax
+        return JsonResponse({
+            'cart_items_count': cart.items.count(),
+            'item_total': cart_item.item_total,
+            'cart_total': cart.cart_total,
+            })
 
 
 class MakeOrder(View):
@@ -313,48 +336,26 @@ class MakeOrder(View):
 
 
 # view to see info about orders
-def account(request):
-    # cart init
-    cart = create_cart(request)
-    cart.recount_cart()
+class Account(View):
+    def get(self, request):
+        # cart init
+        cart = create_cart(request)
+        cart.recount_cart()
 
-    # filter orders to see which are from this user and render them to html, if staff — get all
-    if request.user.is_authenticated:
-        if request.user.is_staff:
-            orders = Order.objects.all().order_by('-id')
+        # filter orders to see which are from this user and render them to html, if staff — get all
+        if request.user.is_authenticated:
+            if request.user.is_staff:
+                orders = Order.objects.all().order_by('-id')
+            else:
+                orders = Order.objects.filter(user=request.user).order_by('-id')
         else:
-            orders = Order.objects.filter(user=request.user).order_by('-id')
-    else:
-        raise Http404("Page not found")
+            raise Http404("Page not found")
 
-    context = {
-        'cart': cart,
-        'orders': orders,
-    }
-    return render(request, 'shop/account.html', context=context)
-
-
-# send mail to user with registration information
-def send_reg_mail(username, password, email):
-
-    # collect info to context
-    context = {
-        'username': username,
-        'password': password,
-        'email': email
-    }
-
-    # render context to html template
-    html_content = render_to_string('shop/reg_mail.html', context)
-
-    # construct email
-    mail = EmailMessage('Регистрация в магазине СМПГЕО', html_content, 'job.shevtsov@ya.ru', [email])
-
-    # define content type to html
-    mail.content_subtype = 'html'
-
-    # send it
-    mail.send()
+        context = {
+            'cart': cart,
+            'orders': orders,
+        }
+        return render(request, 'shop/account.html', context=context)
 
 
 class Registration(View):
@@ -413,14 +414,8 @@ class Login(View):
 
             # if it's alright, login user and redirect to main page
             login(request, user)
-            return redirect('index_url')
+            return redirect('shop_main_url')
         return render(request, 'shop/login.html', context={'form': bound_form})
-
-
-# logout user function
-def logout_user(request):
-    logout(request)
-    return redirect('index_url')
 
 
 class PasswordReset(View):
