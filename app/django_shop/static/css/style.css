@@ -100,3 +100,8 @@
 	width: 100%;
 	left: 0;
 }
+
+.service img {
+  width: 250px;
+  height: 250px;
+}
