@@ -1,3 +1,7 @@
+img {
+  max-width: 100%;
+}
+
 .admin-panel {
   position: fixed;
   right: 50px;

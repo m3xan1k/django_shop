@@ -21,12 +21,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'db5ntcmpg$hkv(00z0e#3^kio0+@6u#ki9hci=g3a=p^u6t2zf'
+with open(BASE_DIR + '/settings.json', 'r') as f:
+    data = json.load(f)
+SECRET_KEY = data['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'smpgeo.tech-dev.ovh']
 
 
 # Application definition
