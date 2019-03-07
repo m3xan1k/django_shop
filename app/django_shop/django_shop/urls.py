@@ -29,8 +29,10 @@ info_dict = {
 
 urlpatterns = [
     path('smpgeoadmin/', admin.site.urls),
-    path('', redirect_shop, name='index_url'),
+    path('', include('landing.urls')),
+    path('services/', include('services.urls')),
     path('shop/', include('shop.urls')),
+    path('blog/', include('blog.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('sitemap.xml', sitemap, {'sitemaps': {'blog': GenericSitemap(info_dict, priority=0.6)}}, name='django.contrib.sitemaps.views.sitemap'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

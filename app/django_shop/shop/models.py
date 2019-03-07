@@ -10,6 +10,7 @@ from django.utils import timezone
 
 from django.contrib.auth.models import User
 from ckeditor_uploader.fields import RichTextUploadingField
+import random
 
 # Create your models here.
 
@@ -56,6 +57,12 @@ def image_folder(instance, filename):
     return '{}/{}'.format(instance.slug, filename)
 
 
+class ProductManager(models.Manager):
+    def get_random_three(self):
+        return [random.choice(self.all()) for x in range(3)]
+
+
+
 class Product(models.Model):
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -83,6 +90,9 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product_detail_url', kwargs={'slug': self.slug})
+
+    objects = ProductManager()
+
 
 class SliderImage(models.Model):
     title = models.CharField(max_length=100)

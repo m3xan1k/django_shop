@@ -1,0 +1,196 @@
+
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+  {{ block.super }}
+{% endblock %}
+
+{% block maincontent %}
+<!-- </div> -->
+<main role="main">
+
+  <div id="myCarousel" class="carousel slide mb-5" data-ride="carousel">
+    <ol class="carousel-indicators">
+      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+      <li data-target="#myCarousel" data-slide-to="1"></li>
+      <li data-target="#myCarousel" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="{% static 'img/a.jpeg' %}" alt="" width="100%" height="400px">
+        <div class="container">
+          <div class="carousel-caption text-left">
+            <h1>Лазерные трекеры</h1>
+            <p>Большой ассортимент в наличии</p>
+            <p><a class="btn btn-lg btn-primary" href="{% url 'shop_main_url' %}" role="button">В магазин</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'img/b.jpeg' %}" alt="" width="100%" height="400px">
+        <div class="container">
+          <div class="carousel-caption">
+            <h1>Измерительные работы</h1>
+            <p>Производим широкий спектр метрологических работ</p>
+            <p><a class="btn btn-lg btn-primary" href="{% url 'services_main_url' %}" role="button">Посмотреть всё</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'img/c.jpeg' %}" alt="" width="100%" height="400px">
+        <div class="container">
+          <div class="carousel-caption text-right">
+            <h1>Блог о геодезии</h1>
+            <p>Актуальные статьи, описание рабочего процесса и новости в мире геодезии</p>
+            <p><a class="btn btn-lg btn-primary" href="{% url 'posts_list_url' %}" role="button">Читать блог</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+
+
+  <!-- Marketing messaging and featurettes
+  ================================================== -->
+  <!-- Wrap the rest of the page in another container to center all the content. -->
+
+  <div class="container marketing mt-5">
+    <h3 class="text-center text-uppercase mt-3 mb-5">Измерительные работы</h3>
+    <!-- Three columns of text below the carousel -->
+    <div class="row">
+      {% for service in services %}
+      <div class="service col-lg-4 text-center">
+        <a href="{{ service.get_absolute_url }}"><img class="rounded-circle" src="{{ MEDIA_URL }}{{ service.image.url }}" alt=""></a>
+        <h2 class="">{{ service.title }}</h2>
+        <p class="text-justify">{{ service.body|safe|truncatewords:10 }}</p>
+        <p><a class="btn btn-secondary" href="{{ service.get_absolute_url }}" role="button">Узнать подробнее</a></p>
+      </div><!-- /.col-lg-4 -->
+      {% endfor %}
+    </div><!-- /.row -->
+  </div>
+
+
+  <!-- about company in numbers -->
+  <div class="container mb-5">
+    <div class="block1" id="about">
+      <div class="block1-title text-uppercase">О компании в цифрах</div>
+      <div class="block1-2">
+        <div class="container clearfix block1-wrap">
+          <div class="block1-item">
+            <div>0.02</div>
+            <span>0.02 мм - точность <br>в производственных условиях<br></span>
+          </div>
+          <div class="block1-item">
+            <div>6</div>
+            <span>более 6 лет <br>на рынке <br>геодезических работ</span>
+          </div>
+          <div class="block1-item">
+            <div>100</div>
+            <span>более 100 <br>выполненных проектов <br>по геодезии</span>
+          </div>
+          <div class="block1-item">
+            <div>40</div>
+            <span>выполненные проекты <br>в 40 городах <br>россии и зарубежья</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end about -->
+
+
+    <!-- START THE FEATURETTES -->
+  <div class="container mt-5 mb-5">
+    <h3 class="text-center mb-5 text-uppercase">Последние поступления в магазине</h3>
+    <hr class="featurette-divider">
+
+    <div class="row">
+    {% for product in products %}
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card h-100">
+          <div class="product-showcase-img rounded">
+            <a href="{{ product.get_absolute_url }}"><img class="product-showcase-img card-img-top" src="{{ MEDIA_URL }}{{ product.image.url }}" alt="{{ product.title }}" ></a>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">
+              <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
+            </h5>
+            <h6>{{ product.price }} ₽</h6>
+            <p class="card-text">{{ product.description|truncatewords:15|safe }}</p>
+          </div>
+
+          <div class="card-footer">
+            {% if product.title in cart_items %}
+              <a href="#" class="add-to-cart" data-slug="{{ product.slug }}"><button class="btn btn-success" disabled>Товар в корзине</button></a>
+            {% elif not product.available %}
+              <a href="#" class="add-to-cart" data-slug="{{ product.slug }}"><button class="btn btn-warning" disabled>Нет в наличии</button></a>
+            {% else %}
+              <a href="#" class="add-to-cart" data-slug="{{ product.slug }}"><button class="btn btn-success">В корзину</button></a>
+            {% endif %}
+          </div>
+          <div class="card-footer">
+            {% if product.available %}
+            <small class="text-success">Есть в наличии</small>
+            {% else %}
+            <small class="text-warning">Нет в наличии</small>
+            {% endif %}
+          </div>
+
+          <div class="card-footer">
+            <small class="text-muted">{{ product.category }}  {{ product.brand }}</small>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+
+    <hr class="featurette-divider">
+    </div>
+
+    <!-- /END THE FEATURETTES -->
+
+<!-- <div class="container"> -->
+  <h3 class="text-center mb-5 text-uppercase">Обновления в блоге</h3>
+  <div class="row justify-content-center mb-5">
+    {% for post in posts %}
+    <div class="col-4">
+      <div class="card h-100" style="width: 18rem;">
+        <img src="{{ MEDIA_URL }}{{ post.image.url }}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{ post.title }}</h5>
+          <p class="card-text">{{ post.body|safe|truncatewords:15 }}</p>
+          <a href="{{ post.get_absolute_url }}" class="btn btn-primary">Читать</a>
+        </div>
+        <div class="card-footer">
+          <span class="text-muted"><small>{{ post.pub_date }}</small></span>
+        </div>
+        <div class="card-footer">
+          <span class="text-muted"><small>
+            Тэги
+            {% for tag in post.tags.all %}
+              <a href="{{ tag.get_absolute_url }}">{{ tag }}</a>
+            {% endfor %}
+          </small></span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+<!-- </div> -->
+
+
+
+  </div><!-- /.container -->
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+
+Измерительные услуги - {{ block.super }}
+
+{% endblock %}
+
+{% block maincontent %}
+
+<div class="alert alert-secondary mb-5" role="alert">
+  <h2>Измерительные работы</h2>
+</div>
+
+<div class="container marketing">
+
+  <!-- Three columns of text below the carousel -->
+  <div class="row">
+    {% for service in services %}
+    <div class="service col-lg-4 text-center">
+      <a href="{{ service.get_absolute_url }}"><img class="rounded-circle" src="{{ MEDIA_URL }}{{ service.image.url }}" alt=""></a>
+
+      <h2 class="">{{ service.title }}</h2>
+      <p class="text-justify">{{ service.body|safe|truncatewords:6 }}</p>
+      <p><a class="btn btn-secondary" href="{{ service.get_absolute_url }}" role="button">Узнать подробнее</a></p>
+    </div><!-- /.col-lg-4 -->
+    {% endfor %}
+  </div><!-- /.row -->
+</div>
+
+{% endblock %}

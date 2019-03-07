@@ -1,13 +1,12 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'shop_main_url' %}"><img src="{% static 'img/logo_ru.png' %}" alt="" width="100px"></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav ml-auto">
+      <ul class="nav">
         <li class="nav-item">
           <a class="nav-link" href="{% url 'shop_main_url' %}">Каталог
             <span class="sr-only">(current)</span>
@@ -15,9 +14,6 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">О магазине</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Контакт</a>
         </li>
         {% if not request.user.is_authenticated %}
           <li class="nav-item">

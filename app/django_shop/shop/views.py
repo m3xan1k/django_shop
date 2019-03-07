@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from django.views.generic import View
 from django.http import JsonResponse, Http404
@@ -11,30 +11,8 @@ from django.template.loader import render_to_string
 import string
 import random
 from django.core.paginator import Paginator
+from .utils import *
 
-
-
-#  initialize cart in current session
-def create_cart(request):
-
-    try:
-        # define cart_id to request.session['cart_id']
-        cart_id = request.session['cart_id']
-
-        # matching cart_id variable with objects in Cart model
-        cart = Cart.objects.get(id=cart_id)
-
-        # define request.session['total'] as count of all items in current cart
-        request.session['total'] = cart.items.count()
-
-    # if it's a new session, construct new cart
-    except:
-        cart = Cart()
-        cart.save()
-        cart_id = cart.id
-        request.session['cart_id'] = cart_id
-        # cart = Cart.objects.get(id=cart_id)
-    return cart
 
 
 def create_order_object(request, bound_form, cart):
@@ -121,7 +99,6 @@ def logout_user(request):
 def shop_main(request):
     # cart initialize
     cart = create_cart(request)
-    print(request._get_full_path)
 
     # get all categories, products, slider images to render them on page
     categories = Category.objects.all()
@@ -150,58 +127,16 @@ def shop_main(request):
     return render(request, 'shop/shop_main.html', context=context)
 
 
-class ProductDetail(View):
-    def get(self, request, slug):
+class ProductDetail(ObjectDetailMixin, View):
 
-        # get product by slug, define categories and initialize cart
-        product = Product.objects.get(slug__iexact=slug)
-        categories = Category.objects.all()
-        current_category = product.category
-        cart = create_cart(request)
-
-        # filter products that are in cart as cart items to disable add-to-cart buttons
-        item_titles = [item.product.title for item in cart.items.all()]
-        cart_items = [product.title for product in Product.objects.all() if product.title in item_titles]
-
-        # collect context and render to html
-        context = {
-            'categories': categories,
-            'current_category': current_category,
-            'product': product,
-            'cart_items': cart_items,
-            'cart': cart,
-        }
-        return render(request, 'shop/product_detail.html', context=context)
+    model = Product
+    template = 'shop/product_detail.html'
 
 
-class CategoryDetail(View):
-    def get(self, request, slug):
-        # initialize cart and categories
-        cart = create_cart(request)
-        categories = Category.objects.all()
+class CategoryDetail(ObjectDetailMixin, View):
 
-        # filter categories to find current category, and filter products by current category
-        current_category = Category.objects.get(slug__iexact=slug)
-        products = Product.objects.filter(category=current_category)
-
-        # filter products that are in cart as cart items to disable add-to-cart buttons
-        item_titles = [item.product.title for item in cart.items.all()]
-        cart_items = [product.title for product in products if product.title in item_titles]
-
-        # add pagination
-        paginator = Paginator(products, 3)
-        page_number = request.GET.get('page', 1)
-        page = paginator.get_page(page_number)
-
-        # collect context and render to html
-        context = {
-            'categories': categories,
-            'current_category': current_category,
-            'page': page, # products, actually
-            'cart_items': cart_items,
-            'cart': cart,
-        }
-        return render(request, 'shop/category_detail.html', context=context)
+    model = Category
+    template = 'shop/category_detail.html'
 
 
 # defining not cart itself, but cart view page

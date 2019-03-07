@@ -21,7 +21,9 @@
 {% for product in page.object_list %}
   <div class="col-lg-4 col-md-6 mb-4">
     <div class="card h-100">
-      <a href="#"><img class="card-img-top" src="{{ MEDIA_URL }}{{ product.image.url }}" alt="{{ product.title }}" style="width: 250px; height: 180px;"></a>
+      <div class="product-showcase-img rounded">
+        <a href="{{ product.get_absolute_url }}"><img class="product-showcase-img card-img-top" src="{{ MEDIA_URL }}{{ product.image.url }}" alt="{{ product.title }}" ></a>
+      </div>
       <div class="card-body">
         <h5 class="card-title">
           <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
@@ -55,6 +57,9 @@
 {% endfor %}
 </div>
 <!-- /.row -->
+
+
+<!-- pagination -->
 
 <nav aria-label="...">
   <ul class="pagination">

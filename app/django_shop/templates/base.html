@@ -1,0 +1,65 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <!-- add meta info everywhere -->
+  {% include 'includes/meta.html' %}
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>{% block title %}СМП.ГЕО высокоточные геодезические измерения{% endblock %}</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'css/shop-homepage.css' %}" rel="stylesheet">
+
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+</head>
+<body>
+
+
+  <!-- Page Content -->
+  <div class="container">
+
+    {% include 'includes/main_navbar.html' %}
+
+
+{% block maincontent %}
+
+{% endblock %}
+
+
+
+</div>
+<!-- /.container -->
+
+</div>
+
+</div>
+
+
+{% include 'includes/footer.html' %}
+
+
+{% if request.user.is_staff %}
+  <div class="admin-panel">
+    <a href="/smpgeoadmin" class="btn btn-info">Admin</a>
+  </div>
+{% endif %}
+
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <script type="text/javascript">window.jQuery || document.write('<script type="text/javascript" src="{% static 'js/vendor/jquery/jquery.min.js' %}"><\/script>');</script>
+
+  <script src="{% static 'js/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+</html>

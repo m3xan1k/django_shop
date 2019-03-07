@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+
+Контакты - {{ block.super }}
+
+{% endblock %}
+
+{% block maincontent %}
+
+<div class="alert alert-secondary mb-5" role="alert">
+  <h2>Контакты</h2>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        Генеральный директор
+      </div>
+      <div class="card-body">
+        <blockquote class="blockquote mb-0">
+          <p>Сергей Ржевский</p>
+          <div class="blockquote-footer">+7 916 548 51 57</div>
+          <div class="blockquote-footer text-underline"><u>r-s-a@ya.ru</u></div>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        Офис СМП-Геодезия
+      </div>
+      <div class="card-body">
+        <p>Адрес: РФ, г. Москва, Шушенская, 4</p>
+        <p>Телефон: +7 499 112 34 03</p>
+        <p>E-mail: geo@smp93.ru</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        Главный инженер
+      </div>
+      <div class="card-body">
+        <blockquote class="blockquote mb-0">
+          <p>Михаил Лебедев</p>
+          <div class="blockquote-footer">+7 981 737 94 56</div>
+          <div class="blockquote-footer text-underline"><u>m.lebedev@smp93.ru</u></div>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        Как нас найти
+      </div>
+      <div class="card-body">
+        <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A037525fc33eee9f8f01684bee3a58e2b67a2bf2f2f081579b9c9e518b08d1b96&amp;source=constructor" width="500" height="400" frameborder="0"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+<iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A037525fc33eee9f8f01684bee3a58e2b67a2bf2f2f081579b9c9e518b08d1b96&amp;source=constructor" width="500" height="400" frameborder="0"></iframe>
