@@ -26,7 +26,7 @@ with open(BASE_DIR + '/settings.json', 'r') as f:
 SECRET_KEY = data['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'smpgeo.tech-dev.ovh']
 

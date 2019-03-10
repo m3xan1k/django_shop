@@ -375,6 +375,6 @@ class PasswordReset(View):
 
             # sending an email
             send_reg_mail(user.username, new_password, email)
-            messages.success(request, f'Мы отправили письмо с новым паролем на почту "{email}"')
+            messages.success(request, 'Мы отправили письмо с новым паролем на почту "{}"'.format(email))
             return redirect('login_url')
         return render(request, 'shop/password_reset.html', context={'form': bound_form})

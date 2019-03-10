@@ -53,7 +53,7 @@ class Brand(models.Model):
 
 def image_folder(instance, filename):
     file_ext = filename.split('.')[1]
-    filename = f'{instance.slug}.{file_ext}'
+    filename = '{}.{}'.format(instance.slug, file_ext)
     return '{}/{}'.format(instance.slug, filename)
 
 
@@ -172,7 +172,7 @@ class Order(models.Model):
     status = models.CharField(max_length=100, choices=ORDER_STATUS_CHOICES, default=ORDER_STATUS_CHOICES[0][0])
 
     def __str__(self):
-        return f'Заказ №{self.id}'
+        return 'Заказ №{}'.format(self.id)
 
     def details(self):
         for item in self.items.items.all():

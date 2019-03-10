@@ -17,7 +17,7 @@ def gen_slug(title):
 
 def image_folder(instance, filename):
     file_ext = filename.split('.')[1]
-    filename = f'{instance.slug}.{file_ext}'
+    filename = '{}.{}'.format(instance.slug, file_ext)
     return '{}/{}'.format(instance.slug, filename)
 
 
