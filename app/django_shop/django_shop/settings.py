@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'blog',
     'landing',
     'services',
+    'photogallery',
+    'django_crontab',
 ]
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
@@ -154,3 +156,7 @@ EMAIL_HOST_USER = email_settings['email_host_user']
 EMAIL_HOST_PASSWORD = email_settings['email_host_password']
 EMAIL_PORT = email_settings['email_port']
 EMAIL_USE_SSL = True
+
+CRONJOBS = [
+    ('*/30 * * * *', 'photogallery.instagram_parser.check_updates'),
+]
