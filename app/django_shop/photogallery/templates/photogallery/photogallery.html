@@ -38,10 +38,12 @@
                   </button>
                 </div>
                 <div class="insta-modal modal-body">
-                  <div class="row justify-content-center">
+                  <div class="row justify-content-center mb-3">
                     <a href="{{ post.post_link }}" target="_blank"><img src="{{ post.image_link }}" class="card-img-top" alt="..."></a>
                   </div>
-                  <p>{{ post.post_description }}</p>
+                  <div class="insta-text row justify-content-center mx-auto">
+                    <p>{{ post.post_description }}</p>
+                  </div>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>

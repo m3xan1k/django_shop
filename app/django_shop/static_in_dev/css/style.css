@@ -131,3 +131,17 @@ img {
 .insta-card button:hover {
   opacity: 0.3;
 }
+
+.insta-text {
+  width: 640px;
+}
+
+@media(max-width:700px){
+  .insta-modal img {
+    width: 350px;
+    height: 350px;
+  }
+  .insta-text {
+    width: 100%;
+  }
+}
