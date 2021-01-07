@@ -8,7 +8,7 @@ django-compat==1.0.15
 django-crontab==0.7.1
 django-js-asset==1.2.2
 idna==2.8
-lxml==4.3.2
+lxml==4.6.2
 Pillow==5.4.1
 pkg-resources==0.0.0
 pytz==2018.9
